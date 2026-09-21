@@ -1,0 +1,111 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ControlArt",
+        "description": "First wired relay module. Only the IP is needed: the module reports its own MAC. Add the others later under Configure.",
+        "data": {
+          "host": "IP address",
+          "port": "TCP port",
+          "name": "Name",
+          "keypad_inputs": "Keypad inputs"
+        },
+        "data_description": {
+          "port": "Shown in mdConfig; 4998 by default.",
+          "keypad_inputs": "Tick the inputs wired to keypad push buttons. They become event entities; the others become switch-position sensors."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Nothing answered at this IP and port.",
+      "sem_resposta": "Something answered, but not as a ControlArt module.",
+      "ja_cadastrado": "This module is already configured.",
+      "mac_diferente": "Another module answered at this address."
+    },
+    "abort": {
+      "already_configured": "ControlArt is already configured. Use Configure to add modules."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "ControlArt modules",
+        "menu_options": {
+          "adicionar": "Add a module",
+          "escolher_editar": "Edit a module",
+          "remover": "Remove a module"
+        }
+      },
+      "adicionar": {
+        "title": "Add a module",
+        "data": {
+          "host": "IP address",
+          "port": "TCP port",
+          "name": "Name",
+          "keypad_inputs": "Keypad inputs"
+        },
+        "data_description": {
+          "keypad_inputs": "Tick the inputs wired to keypad push buttons."
+        }
+      },
+      "escolher_editar": {
+        "title": "Edit a module",
+        "data": {
+          "mac": "Module"
+        }
+      },
+      "editar": {
+        "title": "Edit module {mac}",
+        "data": {
+          "host": "IP address",
+          "port": "TCP port",
+          "name": "Name",
+          "keypad_inputs": "Keypad inputs"
+        },
+        "data_description": {
+          "keypad_inputs": "Changing this replaces the input's sensor with an event entity, or the other way round."
+        }
+      },
+      "remover": {
+        "title": "Remove a module",
+        "description": "The module's entities are removed from Home Assistant.",
+        "data": {
+          "mac": "Module"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Nothing answered at this IP and port.",
+      "sem_resposta": "Something answered, but not as a ControlArt module.",
+      "ja_cadastrado": "This module is already configured.",
+      "mac_diferente": "Another module answered at this address."
+    }
+  },
+  "entity": {
+    "light": {
+      "saida": {
+        "name": "Output {numero}"
+      }
+    },
+    "event": {
+      "tecla": {
+        "name": "Key {numero}",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press": "Press"
+            }
+          }
+        }
+      }
+    },
+    "binary_sensor": {
+      "entrada": {
+        "name": "Input {numero}"
+      },
+      "conexao": {
+        "name": "Connection"
+      }
+    }
+  }
+}

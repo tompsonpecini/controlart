@@ -1,0 +1,111 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ControlArt",
+        "description": "Primeiro módulo cabeado a relé. Basta o IP: o módulo informa o próprio MAC. Os outros se adicionam depois, em Configurar.",
+        "data": {
+          "host": "Endereço IP",
+          "port": "Porta TCP",
+          "name": "Nome",
+          "keypad_inputs": "Entradas de keypad"
+        },
+        "data_description": {
+          "port": "Aparece no mdConfig; 4998 por padrão.",
+          "keypad_inputs": "Marque as entradas ligadas a teclas de keypad (pulsadores). Elas viram entidades de evento; as demais viram sensores da posição do interruptor."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Nada respondeu neste IP e porta.",
+      "sem_resposta": "Algo respondeu, mas não como um módulo ControlArt.",
+      "ja_cadastrado": "Este módulo já está cadastrado.",
+      "mac_diferente": "Outro módulo respondeu neste endereço."
+    },
+    "abort": {
+      "already_configured": "O ControlArt já está configurado. Use Configurar para adicionar módulos."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Módulos ControlArt",
+        "menu_options": {
+          "adicionar": "Adicionar um módulo",
+          "escolher_editar": "Editar um módulo",
+          "remover": "Remover um módulo"
+        }
+      },
+      "adicionar": {
+        "title": "Adicionar um módulo",
+        "data": {
+          "host": "Endereço IP",
+          "port": "Porta TCP",
+          "name": "Nome",
+          "keypad_inputs": "Entradas de keypad"
+        },
+        "data_description": {
+          "keypad_inputs": "Marque as entradas ligadas a teclas de keypad (pulsadores)."
+        }
+      },
+      "escolher_editar": {
+        "title": "Editar um módulo",
+        "data": {
+          "mac": "Módulo"
+        }
+      },
+      "editar": {
+        "title": "Editar o módulo {mac}",
+        "data": {
+          "host": "Endereço IP",
+          "port": "Porta TCP",
+          "name": "Nome",
+          "keypad_inputs": "Entradas de keypad"
+        },
+        "data_description": {
+          "keypad_inputs": "Mudar isto troca o sensor da entrada por uma entidade de evento, ou o contrário."
+        }
+      },
+      "remover": {
+        "title": "Remover um módulo",
+        "description": "As entidades do módulo saem do Home Assistant.",
+        "data": {
+          "mac": "Módulo"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Nada respondeu neste IP e porta.",
+      "sem_resposta": "Algo respondeu, mas não como um módulo ControlArt.",
+      "ja_cadastrado": "Este módulo já está cadastrado.",
+      "mac_diferente": "Outro módulo respondeu neste endereço."
+    }
+  },
+  "entity": {
+    "light": {
+      "saida": {
+        "name": "Saída {numero}"
+      }
+    },
+    "event": {
+      "tecla": {
+        "name": "Tecla {numero}",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "press": "Toque"
+            }
+          }
+        }
+      }
+    },
+    "binary_sensor": {
+      "entrada": {
+        "name": "Entrada {numero}"
+      },
+      "conexao": {
+        "name": "Conexão"
+      }
+    }
+  }
+}

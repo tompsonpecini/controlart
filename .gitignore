@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+# dados de uma instalacao especifica - nunca publicar
+custom_components/controlart/legado.py
