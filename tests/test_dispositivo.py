@@ -1,8 +1,8 @@
-"""Firmware e MAC no card "Informacoes do dispositivo" do Home Assistant.
+"""Firmware no card "Informacoes do dispositivo" do Home Assistant.
 
-O MAC ja vem no cadastro (os tres ultimos bytes, que e tudo o que o modulo
-informa) e entra no dispositivo desde a criacao. O firmware so chega depois
-da conexao, entao atualiza o dispositivo ja registrado.
+O firmware so chega depois da conexao, entao atualiza o dispositivo ja
+registrado. O MAC nao entra como MAC de rede: o modulo so informa os tres
+ultimos bytes, que ficam como identificador do dispositivo.
 """
 
 from __future__ import annotations
@@ -55,9 +55,10 @@ class Firmware(unittest.TestCase):
 
 
 class Mac(unittest.TestCase):
-    def test_dispositivo_tem_o_mac(self):
+    def test_tres_bytes_nao_viram_mac_de_rede(self):
         info = light.Saida(rele(), 1)._attr_device_info
-        self.assertEqual(info["connections"], {("mac", MAC)})
+        self.assertNotIn("connections", info)
+        self.assertEqual(info["identifiers"], {("controlart", MAC)})
 
 
 def dispositivo(ident, sw_version=None):

@@ -16,7 +16,7 @@ Cada módulo vira um dispositivo com:
 | `binary_sensor` | 1                                   | Se o módulo está respondendo                                                       |
 | `sensor`        | 1                                   | O endereço IP do módulo (diagnóstico), visível mesmo com ele fora do ar            |
 
-O card do dispositivo mostra o **firmware** (como o mdConfig, por exemplo 3.027) e o **MAC** que o módulo informa, que são só os três últimos bytes.
+O card do dispositivo mostra o **firmware**, como o mdConfig (por exemplo 3.027).
 
 A página da integração também oferece **Baixar diagnóstico**: as últimas linhas trocadas com cada módulo, o firmware e o MAC que ele informa, e quantas vezes a conexão caiu. Serve para suporte a distância, sem terminal na rede da instalação.
 

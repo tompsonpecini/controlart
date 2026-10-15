@@ -82,7 +82,6 @@ _modulo(
 )
 _modulo(
     "homeassistant.helpers.device_registry",
-    CONNECTION_NETWORK_MAC="mac",
     DeviceInfo=dict,
     async_get=None,                 # cada teste poe o seu registro falso
     async_entries_for_config_entry=None,

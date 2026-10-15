@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from homeassistant.core import callback
-from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC, DeviceInfo
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import Entity
 
@@ -21,11 +21,12 @@ class EntidadeControlArt(Entity):
 
     def __init__(self, modulo: ModuloConexao) -> None:
         self._modulo = modulo
-        # O MAC e so a parte que o modulo informa (tres ultimos bytes). O firmware
-        # chega depois da conexao e entra pelo registro (registro.atualiza_dispositivo).
+        # Sem `connections`: o modulo so informa os tres ultimos bytes do MAC, e
+        # como MAC de rede o Home Assistant os compararia com o MAC inteiro que
+        # outras integracoes (roteador, DHCP) registram. O firmware chega depois
+        # da conexao e entra pelo registro (registro.atualiza_dispositivo).
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, modulo.mac)},
-            connections={(CONNECTION_NETWORK_MAC, modulo.mac)},
             name=modulo.nome,
             manufacturer="ControlArt",
             model=MODELOS[modulo.tipo],
