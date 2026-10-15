@@ -68,6 +68,7 @@ O módulo precisa de **IP fixo** (reserva no roteador ou IP estático no mdConfi
 - **Dimmer aceso sem brilho escolhido** (botão, voz, "acender a sala"): o canal volta ao último nível em que ficou aceso desde que o Home Assistant iniciou; se nunca acendeu, vai ao máximo. Os degraus de uma transição não contam: apagar devagar e acender de novo volta ao nível de antes.
 - **Transição no dimmer** (`transition` em `light.turn_on` e `light.turn_off`): a integração faz a rampa, um nível de cada vez, com pelo menos 0,2 s entre os degraus. O serviço volta na hora; um comando novo no mesmo canal cancela a rampa.
 - **Comando que o módulo não confirma** vira erro no Home Assistant em vez de passar em silêncio. Um módulo que para de responder derruba a conexão e as entidades ficam indisponíveis até ele voltar.
+- **Script que acende várias luzes em sequência**: ponha `continue_on_error: true` nas ações de luz. Sem isso, um comando não confirmado interrompe o resto do script.
 
 ## Limitações
 
@@ -76,11 +77,13 @@ O módulo precisa de **IP fixo** (reserva no roteador ou IP estático no mdConfi
 
 O protocolo, com as armadilhas que apareceram pelo caminho, está descrito em [docs/protocolo.md](docs/protocolo.md).
 
+Os testes rodam sem o Home Assistant instalado, só com a biblioteca padrão: `python -m unittest discover -s tests`.
+
 ---
 
 ## English summary
 
-Local-push Home Assistant integration for **ControlArt wired modules**: the relay module (10 relay outputs, 12 digital inputs) and the dimmer module (channels with a 0 to 255 level, 12 digital inputs). Each module becomes a device with one `light` entity per output (with brightness on the dimmer), one `event` entity per keypad push button, one diagnostic `binary_sensor` per switch input, and a connectivity sensor. Setup only asks for the module's IP; the module reports its own MAC and type. Wall switches and keypads keep working through the module itself; Home Assistant follows every change and can switch outputs alongside them.
+Local-push Home Assistant integration for **ControlArt wired modules**: the relay module (10 relay outputs, 12 digital inputs) and the dimmer module (channels with a 0 to 255 level, 12 digital inputs). Each module becomes a device with one `light` entity per output (with brightness on the dimmer), one `event` entity per keypad push button, one diagnostic `binary_sensor` per switch input, a connectivity sensor and a diagnostic IP sensor. The device card shows the module firmware, and **Download diagnostics** returns the last lines exchanged with each module. Setup only asks for the module's IP; the module reports its own MAC and type. Wall switches and keypads keep working through the module itself; Home Assistant follows every change and can switch outputs alongside them.
 
 Install with the HACS button above (or add `https://github.com/tompsonpecini/controlart` as a custom repository, type Integration), restart, then use the setup button to add the first module.
 
