@@ -320,6 +320,8 @@ class ModuloConexao:
         if self._writer is None or not self.conectado:
             raise HomeAssistantError(f"ControlArt {self.nome} ({self.host}) esta desconectado")
         self._cancela_rampa(canal)
+        if alvo:
+            self._acesos[canal - 1] = alvo   # o nivel pedido, mesmo se a rampa for interrompida
         self._rampas[canal] = asyncio.get_running_loop().create_task(
             self._rampa(canal, alvo, segundos), name=f"controlart {self.mac} rampa {canal}"
         )
@@ -447,7 +449,12 @@ class ModuloConexao:
             and agora - self._ultimo_quadro < JANELA_LIMPEZA
         )
         self._ultimo_quadro = agora
-        self._acesos = [nivel or anterior for nivel, anterior in zip(saidas, self._acesos)]
+        # os degraus de uma rampa nao contam: apagar com transicao deixaria o
+        # ultimo degrau (4% numa rampa de 5 s) como nivel para acender
+        self._acesos = [
+            aceso if canal in self._rampas else (nivel or aceso)
+            for canal, (nivel, aceso) in enumerate(zip(saidas, self._acesos), start=1)
+        ]
 
         if not self.tem_estado:
             self.entradas, self.saidas = entradas, saidas

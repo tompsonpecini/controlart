@@ -113,6 +113,30 @@ class Rampa(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(tarefa.done())
         self.assertEqual(mod._rampas, {})
 
+    async def test_apagar_com_transicao_lembra_o_nivel_de_antes(self):
+        # antes, os degraus da descida contavam: acender depois ia ao ultimo (50)
+        mod = dimmer()
+        mod._writer._quadro([200] + [0] * 8)
+        mod.rampa(1, 0, 0.04)
+        await ate_parar(mod, 1)
+        self.assertEqual(mod.saidas[0], 0)
+        self.assertEqual(mod.nivel_ao_ligar(1), 200)
+
+    async def test_acender_no_meio_da_descida_volta_ao_nivel_de_antes(self):
+        mod = dimmer()
+        mod._writer._quadro([255] + [0] * 8)
+        mod.rampa(1, 0, 1.0)
+        await asyncio.sleep(0.05)
+        self.assertLess(mod.saidas[0], 255)                 # ja desceu alguns degraus
+        self.assertEqual(mod.nivel_ao_ligar(1), 255)
+
+    async def test_subir_com_transicao_lembra_o_alvo(self):
+        mod = dimmer()
+        mod.rampa(1, 180, 0.04)
+        await ate_parar(mod, 1)
+        await mod.envia_nivel(1, 0)
+        self.assertEqual(mod.nivel_ao_ligar(1), 180)
+
     async def test_canais_independentes(self):
         mod = dimmer()
         mod.rampa(1, 255, 0.05)

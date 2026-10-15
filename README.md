@@ -65,7 +65,7 @@ O módulo precisa de **IP fixo** (reserva no roteador ou IP estático no mdConfi
 - **Tecla de keypad numa automação**: use o gatilho de _estado_ na entidade `event`. Cada toque muda o estado para o horário do toque. Filtre `not_to: [unknown, unavailable]` para não disparar quando o Home Assistant reinicia.
 - **Interruptor comum numa automação**: a posição da alavanca **não** diz se a luz está acesa. O módulo inverte a saída a cada movimento, então as duas coisas se desencontram. Dispare em _qualquer_ mudança do sensor da entrada e use `toggle`.
 - **Cenas do keypad**: o módulo executa a cena programada no mdConfig quando a tecla é apertada na parede. Não existe comando para disparar essa cena remotamente. Para acioná-la pelo Home Assistant, reproduza-a num script.
-- **Dimmer aceso sem brilho escolhido** (botão, voz, "acender a sala"): o canal volta ao último nível visto desde que o Home Assistant iniciou; se nunca acendeu, vai ao máximo.
+- **Dimmer aceso sem brilho escolhido** (botão, voz, "acender a sala"): o canal volta ao último nível em que ficou aceso desde que o Home Assistant iniciou; se nunca acendeu, vai ao máximo. Os degraus de uma transição não contam: apagar devagar e acender de novo volta ao nível de antes.
 - **Transição no dimmer** (`transition` em `light.turn_on` e `light.turn_off`): a integração faz a rampa, um nível de cada vez, com pelo menos 0,2 s entre os degraus. O serviço volta na hora; um comando novo no mesmo canal cancela a rampa.
 - **Comando que o módulo não confirma** vira erro no Home Assistant em vez de passar em silêncio. Um módulo que para de responder derruba a conexão e as entidades ficam indisponíveis até ele voltar.
 
