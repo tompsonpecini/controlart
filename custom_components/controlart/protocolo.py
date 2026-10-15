@@ -371,26 +371,6 @@ class ModuloConexao:
                 lambda: self.saidas[canal - 1] != anterior, mudanca, f"saida {canal} em {valor}"
             )
 
-    async def envia_todos(self, ligado: bool) -> None:
-        """Acende ou apaga todas as saidas do modulo com um comando so.
-
-        `mdcmd_setallonmd`/`setalloffmd` com endereco valem so para este
-        modulo (comandos do driver Hubitat da ControlArt). O `setmaster*`, sem
-        endereco, fica de fora: pode pegar todos os modulos da instalacao.
-        """
-        if self._writer is None or not self.conectado:
-            raise HomeAssistantError(f"ControlArt {self.nome} ({self.host}) esta desconectado")
-        anteriores = list(self.saidas)
-        vai_mudar = not all(anteriores) if ligado else any(anteriores)
-        mudanca = self._mudanca
-        await self._escreve(f"mdcmd_setall{'on' if ligado else 'off'}md,{self.addr}")
-        if vai_mudar:
-            await self._confirma(
-                lambda: self.saidas != anteriores,
-                mudanca,
-                "acender tudo" if ligado else "apagar tudo",
-            )
-
     async def _confirma(self, mudou, mudanca: asyncio.Event, descricao: str) -> None:
         """Espera um quadro em que `mudou()` fica verdadeiro, ou levanta erro."""
         try:

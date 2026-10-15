@@ -107,7 +107,6 @@ _modulo(
     LightEntityFeature=type("LightEntityFeature", (), {"TRANSITION": 32}),
 )
 _modulo("homeassistant.components.sensor", SensorEntity=type("SensorEntity", (), {}))
-_modulo("homeassistant.components.button", ButtonEntity=type("ButtonEntity", (), {}))
 
 _pacote = types.ModuleType("controlart")
 _pacote.__path__ = [str(PACOTE)]

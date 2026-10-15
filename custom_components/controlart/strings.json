@@ -114,14 +114,6 @@
       "ip": {
         "name": "IP address"
       }
-    },
-    "button": {
-      "acender_tudo": {
-        "name": "All on"
-      },
-      "apagar_tudo": {
-        "name": "All off"
-      }
     }
   }
 }

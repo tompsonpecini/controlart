@@ -114,14 +114,6 @@
       "ip": {
         "name": "Endereço IP"
       }
-    },
-    "button": {
-      "acender_tudo": {
-        "name": "Acender tudo"
-      },
-      "apagar_tudo": {
-        "name": "Apagar tudo"
-      }
     }
   }
 }

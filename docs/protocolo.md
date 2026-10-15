@@ -70,7 +70,7 @@ Vistos no driver Hubitat para os mesmos módulos ([hhorigian/hubitat_Controlart_
 
 Conferidos num módulo real: `get_firmware_version` e `get_mac_addr`. O firmware vem só como número (o driver Hubitat espera uma linha começando com `VERSION`, que estes módulos não mandam), e o MAC vem curto, igual ao do quadro de estado. Os `setall*` e `setmaster*` ainda **não** foram enviados a um módulo real por esta integração.
 
-A integração usa o `setall*` (com endereço) nos botões "Acender tudo" e "Apagar tudo", e pede firmware e MAC a cada conexão, para o diagnóstico. O `setmaster*` fica de fora: sem endereço, e pelo que descreve o driver ELAN da T4Control, ele vale para todos os módulos da instalação.
+A integração só pede firmware e MAC a cada conexão, para o diagnóstico. Não usa o `setall*` nem o `setmaster*`: um módulo agrupa circuitos pela fiação, não por ambiente, então "acender o módulo inteiro" raramente corresponde a algo que se queira; e o `setmaster*`, sem endereço, pelo que descreve o driver ELAN da T4Control, vale para todos os módulos da instalação.
 
 As linhas de motor que acompanham o estado do relé vêm assim num módulo sem motor configurado, uma por motor (0 a 4):
 
