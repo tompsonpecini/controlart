@@ -44,6 +44,8 @@ Cada mudança gera um **par** de quadros `setcmd`:
 
 O quadro de limpeza não reflete as entradas de verdade e precisa ser descartado. Se não for, um interruptor ligado parece desligar sozinho um instante depois.
 
+**Tecla de keypad não segue essa regra.** Num módulo real, dois toques na mesma tecla, com 4 s entre eles, chegaram como dois quadros com a tecla em `1` e nenhum quadro de limpeza no meio. O quadro mostra as entradas como estão no instante do envio, com a tecla ainda apertada, e o módulo não avisa quando ela é solta. Quem espera a borda de subida perde o segundo toque. A integração pede o estado (`mdcmd_getmd`) a cada segundo depois de um toque, até 5 vezes, até a tecla aparecer solta.
+
 ## Ligar e desligar uma saída
 
 ```
@@ -90,6 +92,7 @@ Os vínculos entre entrada e saída ficam gravados no módulo. Cada vínculo tem
 - `Parse Error!` só aparece para **nome de comando desconhecido**. Um comando com nome válido e argumentos errados, incluindo endereço errado, é engolido em silêncio.
 - Não há comando conhecido para disparar remotamente a cena de uma tecla. `mdcmd_sendcmd`, usado pelo mdConfig, grava a programação; não aciona.
 - Não confie em "a entrada mudou" num quadro isolado; veja a regra do quadro de limpeza acima.
+- O módulo não avisa quando uma tecla de keypad é solta. Sem pedir o estado depois do toque, o toque seguinte na mesma tecla não tem borda de subida.
 - Um módulo sem energia ou com o cabo solto não fecha a conexão TCP. Só dá para perceber a queda pedindo o estado e esperando a resposta.
 
 ## Módulo dimmer

@@ -24,6 +24,12 @@ Cada mudanca gera um PAR de quadros: o real e, ate ~2 s depois, um de
 limpeza com as 12 entradas zeradas e as saidas inalteradas. O quadro de
 limpeza nao reflete a realidade das entradas e e descartado.
 
+Tecla de keypad: o quadro mostra as entradas como estao no instante do envio,
+e o modulo nao avisa quando a tecla e solta. Dois toques seguidos na mesma
+tecla podem chegar como 1 e 1, sem quadro de limpeza entre eles (conferido
+num modulo real). Por isso, depois de cada toque pedimos o estado ate a
+tecla aparecer solta.
+
 Escrita:
 
   mdcmd_sendrele,<a>,<b>,<c>,<canal 0-9>,<0|1>
@@ -72,6 +78,8 @@ from .const import (
 NIVEL_MAX = 255
 LINHAS_GUARDADAS = 50           # para o diagnostico: o bastante para alguns minutos de uso
 PASSO_RAMPA = 0.2               # s · intervalo minimo entre os degraus de uma transicao
+ESPERA_TECLA = 1.0              # s · entre os pedidos de estado depois de um toque
+TENTATIVAS_TECLA = 5            # pedidos, no maximo, ate a tecla aparecer solta
 
 # Identificacao pedida na conexao. Nao vem do proprio repositorio: e o que o
 # driver Hubitat da ControlArt (hhorigian/hubitat_Controlart_Relays) manda.
@@ -152,6 +160,7 @@ class ModuloConexao:
         self._mudanca = asyncio.Event()     # renovado a cada mudanca das saidas
         self._ultimo_quadro = 0.0
         self._rampas: dict[int, asyncio.Task] = {}   # transicao em andamento, por canal
+        self._vigia: asyncio.Task | None = None      # pede o estado ate a tecla aparecer solta
         # so para o diagnostico
         self.linhas: deque[tuple[str, str, str]] = deque(maxlen=LINHAS_GUARDADAS)
         self.firmware: str | None = None        # rele 3027, dimmer 1021 (15/10/2026)
@@ -208,6 +217,8 @@ class ModuloConexao:
         self._parar.set()
         for canal in list(self._rampas):
             self._cancela_rampa(canal)
+        if self._vigia is not None:
+            self._vigia.cancel()
         if self._writer is not None:
             self._writer.close()
         if self._task is not None:
@@ -489,10 +500,38 @@ class ModuloConexao:
             if i + 1 in self.teclas:
                 if entradas[i] == 1:         # pulsador: so a borda de subida
                     async_dispatcher_send(self.hass, SIGNAL_TECLA.format(self.mac, i + 1))
+                    self._vigia_teclas()
             else:
                 mudou_retentivo = True
         if mudou_retentivo:
             async_dispatcher_send(self.hass, SIGNAL_ESTADO.format(self.mac))
+
+    def _vigia_teclas(self) -> None:
+        """Depois de um toque, pede o estado ate a tecla aparecer solta.
+
+        Sem isso a tecla fica guardada em 1 ate o proximo quadro, que pode so
+        vir no keepalive, e um segundo toque na mesma tecla chega sem borda de
+        subida: a cena roda no modulo, mas o evento nao sai no Home Assistant.
+        """
+        if self._writer is None or not self.conectado:
+            return
+        if self._vigia is not None and not self._vigia.done():
+            return                       # ja tem uma vigia pedindo o estado
+        self._vigia = asyncio.get_running_loop().create_task(
+            self._confere_teclas(), name=f"controlart {self.mac} teclas"
+        )
+
+    async def _confere_teclas(self) -> None:
+        for _ in range(TENTATIVAS_TECLA):
+            await asyncio.sleep(ESPERA_TECLA)
+            if not any(self.entradas[n - 1] for n in self.teclas):
+                return                   # a tecla ja apareceu solta
+            if self._writer is None or not self.conectado:
+                return
+            try:
+                await self._pede_estado()
+            except OSError:
+                return                   # a sessao cai e reconecta sozinha
 
 
 class ControlArtHub:
